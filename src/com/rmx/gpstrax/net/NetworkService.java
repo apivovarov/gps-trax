@@ -24,7 +24,7 @@ import com.rmx.gpstrax.GpsTrax;
 
 public class NetworkService extends IntentService {
 
-    public static final String locationUrlStr = "http://172.31.60.250:8080/dlp-proxy-server/rest/location/save";
+    public static final String locationUrlStr = "http://172.31.50.152:8080/dlp-proxy-server/rest/location/save";
 
     public static final Charset utf8 = Charset.forName("UTF-8");
 
