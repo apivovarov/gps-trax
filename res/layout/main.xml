@@ -100,12 +100,18 @@
             android:text="@string/buttonRefreshCount" />
 
         <Button
-            android:id="@+id/buttonSend"
+            android:id="@+id/buttonSendLocations"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="90dp"
-            android:onClick="buttonSendClick"
-            android:text="@string/buttonSend" />
+            android:onClick="buttonSendLocationsClick"
+            android:text="@string/buttonSendLocations" />
+
+        <Button
+            android:id="@+id/buttonSendAccels"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="buttonSendAccelsClick"
+            android:text="@string/buttonSendAccels" />
     </LinearLayout>
 
     <LinearLayout
@@ -155,6 +161,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="4dp"
+            android:text="DB accel count:" />
+
+        <TextView
+            android:id="@+id/textDbAccelCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:freezesText="true"
+            android:text="@string/textDbAccelCount" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="4dp"
             android:text="Send count:" />
 
         <TextView
@@ -165,11 +190,63 @@
             android:text="@string/textSendCnt" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/buttonResetCount"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="buttonResetCountClick"
-        android:text="@string/buttonResetCount" />
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/buttonResetCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="buttonResetCountClick"
+            android:text="@string/buttonResetCount" />
+
+        <Button
+            android:id="@+id/buttonDeleteAllAccels"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="buttonDeleteAllAccelsClick"
+            android:text="@string/buttonDeleteAllAccels" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/editAccelTh"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/editAccelTh" />
+
+        <Button
+            android:id="@+id/buttonSaveAccelTh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="buttonSaveAccelThClick"
+            android:text="@string/buttonSaveAccelTh" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/buttonStartAccel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="buttonStartAccelClick"
+            android:text="@string/buttonStartAccel" />
+
+        <Button
+            android:id="@+id/buttonStopAccel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="buttonStopAccelClick"
+            android:text="@string/buttonStopAccel" />
+    </LinearLayout>
 
 </LinearLayout>

@@ -26,6 +26,8 @@ public class NetworkService extends IntentService {
 
     public static final String locationUrlStr = "http://172.31.50.152:8080/dlp-proxy-server/rest/location/save";
 
+    public static final String accelUrlStr = "http://172.31.50.152:8080/dlp-proxy-server/rest/accel/save";
+
     public static final Charset utf8 = Charset.forName("UTF-8");
 
     public NetworkService() {
@@ -34,8 +36,12 @@ public class NetworkService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.i("gpstrax", "NetworkService th: " + Thread.currentThread());
-        readAndSendLocations();
+        String obj = intent.getExtras().getString(C.NET_OBJ);
+        if ("L".equals(obj)) {
+            readAndSendLocations();
+        } else if ("A".equals(obj)) {
+            readAndSendAccels();
+        }
     }
 
     @Override
@@ -87,7 +93,7 @@ public class NetworkService extends IntentService {
                     String locListJson = locList.toString();
                     Log.i("gpstrax", "batch " + cnt + ": " + locListJson);
 
-                    sendLocationList(locListJson);
+                    sendJsonViaPost(locationUrlStr, locListJson);
                 }
                 Log.i("gpstrax", "deleting batch " + cnt + "; firstId: " + firstId + ", lastId: "
                         + lastId);
@@ -100,7 +106,63 @@ public class NetworkService extends IntentService {
         }
     }
 
-    public void sendLocationList(String json) throws IOException {
+    protected void readAndSendAccels() {
+        try {
+            Log.d("gpstrax", "readAndSendAccels");
+            boolean more = true;
+            int cnt = 0;
+            while (more) {
+                List<String> res = new ArrayList<String>();
+                more = GpsTrax.accelDao.getFirstNAccels(res, C.SEND_BATCH_SIZE);
+                more = false;
+
+                if (res.size() == 0) {
+                    Log.i("gpstrax", "no data were read from DB");
+                    break;
+                }
+
+                JSONObject batch = new JSONObject();
+                JSONArray accelList = new JSONArray();
+                long firstId = 0L;
+                long lastId = 0L;
+
+                JSONObject accel = null;
+                long dlpLocTs = 0L;
+                for (String s : res) {
+                    accel = new JSONObject(s);
+                    dlpLocTs = accel.getLong("ts");
+                    // valid time 01/01/2014 - 01/01/2050
+                    if (dlpLocTs >= C.MIN_LOC_TS && dlpLocTs < C.MAX_LOC_TS) {
+                        accelList.put(accel);
+                    }
+                    if (firstId == 0L) {
+                        firstId = dlpLocTs;
+                    }
+                }
+                lastId = dlpLocTs;
+
+                if (accelList.length() > 0) {
+                    batch.put("accels", accelList);
+                    batch.put("plNo", GpsTrax.plateNo);
+                    // send data
+                    cnt++;
+                    String locListJson = batch.toString();
+                    Log.i("gpstrax", "batch " + cnt + ": " + locListJson);
+
+                    // sendJsonViaPost(accelUrlStr, locListJson);
+                }
+                Log.i("gpstrax", "deleting batch " + cnt + "; firstId: " + firstId + ", lastId: "
+                        + lastId);
+                GpsTrax.accelDao.delAccels(firstId, lastId);
+                GpsTrax.sendCnt++;
+            }
+        } catch (Exception e) {
+            Log.e("gpstrax", e.getMessage(), e);
+            GpsTrax.showErrorMsg(e.getMessage());
+        }
+    }
+
+    public void sendJsonViaPost(String urlStr, String json) throws IOException {
         ConnectivityManager connMgr = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo == null || !networkInfo.isConnected()) {
@@ -108,7 +170,7 @@ public class NetworkService extends IntentService {
         }
         HttpURLConnection urlConnection = null;
         try {
-            URL locationUrl = new URL(locationUrlStr);
+            URL locationUrl = new URL(urlStr);
             urlConnection = (HttpURLConnection)locationUrl.openConnection();
             urlConnection.setDoOutput(true);
             urlConnection.setConnectTimeout(3000);

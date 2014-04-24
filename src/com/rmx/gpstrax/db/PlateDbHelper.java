@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class PlateDbHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     public static final String DATABASE_NAME = "plate.db";
 
@@ -15,17 +15,25 @@ public class PlateDbHelper extends SQLiteOpenHelper {
             + " (" + LocationDao.COLUMN_NAME_KEY + " INTEGER PRIMARY KEY, "
             + LocationDao.COLUMN_NAME_VALUE + " TEXT " + ")";
 
+    private static final String SQL_CREATE_ACCEL = "create table " + AccelDao.TABLE_NAME + " ("
+            + AccelDao.COLUMN_NAME_KEY + " INTEGER PRIMARY KEY, " + AccelDao.COLUMN_NAME_VALUE
+            + " TEXT " + ")";
+
     private static final String SQL_DROP_LOCATION = "DROP TABLE IF EXISTS "
             + LocationDao.TABLE_NAME;
+
+    private static final String SQL_DROP_ACCEL = "DROP TABLE IF EXISTS " + AccelDao.TABLE_NAME;
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_LOCATION);
+        db.execSQL(SQL_CREATE_ACCEL);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(SQL_DROP_LOCATION);
+        db.execSQL(SQL_DROP_ACCEL);
         onCreate(db);
     }
 

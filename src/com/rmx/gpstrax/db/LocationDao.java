@@ -51,7 +51,7 @@ public class LocationDao {
      */
     public synchronized boolean getFirstNLocations(List<String> res, int n) {
         Log.i("gpstrax", "getFirstNLocations, n: " + n);
-        SQLiteDatabase db = GpsTrax.dbHelper.getWritableDatabase();
+        SQLiteDatabase db = GpsTrax.dbHelper.getReadableDatabase();
         try {
             String[] columns = new String[] {
                 COLUMN_NAME_VALUE
@@ -84,7 +84,7 @@ public class LocationDao {
         };
         try {
             int cnt = db.delete(TABLE_NAME, where, whereValues);
-            Log.i("gpstrax", "deleted " + cnt);
+            Log.i("gpstrax", "locations deleted " + cnt);
             return cnt;
         } finally {
             db.close();
@@ -122,12 +122,12 @@ public class LocationDao {
     public synchronized int getCount() {
         SQLiteDatabase db = GpsTrax.dbHelper.getReadableDatabase();
         try {
-            Log.i("gpstrax", "select count");
+            Log.i("gpstrax", "select locations count");
             Cursor c = db.rawQuery("select " + COLUMN_NAME_KEY + " from " + TABLE_NAME, null);
             Log.i("gpstrax", "" + c);
             if (c != null) {
                 int cnt = c.getCount();
-                Log.i("gpstrax", "count: " + cnt);
+                Log.i("gpstrax", "locations count: " + cnt);
                 return cnt;
             }
             return 0;

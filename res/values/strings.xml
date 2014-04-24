@@ -5,19 +5,26 @@
     <string name="textGpsUpdatesStatusLabel">GPS update freq:</string>
     <string name="textGpsUpdatesStatus">-</string>
     <string name="editPlateNo">Plate No</string>
+    <string name="editAccelTh">Accel TH</string>
     <string name="buttonSavePlateNo">Save Setting</string>
+    <string name="buttonSaveAccelTh">Save Setting</string>
     <string name="textLatLon">0.000000,-0.000000 alt: 0.00</string>
     <string name="textLastTime">-</string>
     <string name="button3">Save to DB</string>
     <string name="buttonRefreshCount">Refresh</string>
     <string name="buttonResetCount">Reset Counters</string>
-    <string name="buttonSend">Send 100</string>
+    <string name="buttonDeleteAllAccels">Del Accels</string>
+    <string name="buttonSendLocations">Send Loc</string>
+    <string name="buttonSendAccels">Send Accel</string>
     <string name="buttonListenGps5">5 sec</string>
     <string name="buttonListenGps180">180 sec</string>
     <string name="buttonStopGps">Stop GPS</string>
+    <string name="buttonStartAccel">Start Accel</string>
+    <string name="buttonStopAccel">Stop Accel</string>
     <string name="textGpsCnt">0</string>
     <string name="textSendCnt">0</string>
     <string name="textDbLocationCount">0</string>
+    <string name="textDbAccelCount">0</string>
     <string name="action_settings">Settings</string>
 
 </resources>

@@ -16,7 +16,6 @@
         android:name=".GpsTrax"
         android:allowBackup="true"
         android:icon="@drawable/starthere" >
-
         <activity
             android:name="com.rmx.gpstrax.MainActivity"
             android:label="@string/main_label"
@@ -33,10 +32,13 @@
             android:enabled="true" >
         </service>
         <service
+            android:name=".accel.AccelService"
+            android:enabled="true" >
+        </service>
+        <service
             android:name=".net.NetworkService"
             android:enabled="true" >
         </service>
-
     </application>
 
 </manifest>
