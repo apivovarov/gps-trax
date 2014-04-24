@@ -149,7 +149,7 @@ public class NetworkService extends IntentService {
                     String locListJson = batch.toString();
                     Log.i("gpstrax", "batch " + cnt + ": " + locListJson);
 
-                    // sendJsonViaPost(accelUrlStr, locListJson);
+                    sendJsonViaPost(accelUrlStr, locListJson);
                 }
                 Log.i("gpstrax", "deleting batch " + cnt + "; firstId: " + firstId + ", lastId: "
                         + lastId);
