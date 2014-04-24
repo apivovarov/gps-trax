@@ -20,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.rmx.gpstrax.accel.AccelService;
 import com.rmx.gpstrax.loc.LocationService;
 import com.rmx.gpstrax.net.NetworkService;
 
@@ -42,11 +41,8 @@ public class MainActivity extends Activity {
 
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         GpsTrax.plateNo = sharedPref.getString(C.PLATE_NO, "6YIT551");
-        GpsTrax.accelTh = sharedPref.getFloat(C.ACCEL_TH, 3.0f);
         EditText editPlateNo = (EditText)findViewById(R.id.editPlateNo);
         editPlateNo.setText(GpsTrax.plateNo);
-        EditText editAccelTh = (EditText)findViewById(R.id.editAccelTh);
-        editAccelTh.setText(Float.toString(GpsTrax.accelTh));
 
         Log.d("gpstrax", "onCreate done");
     }
@@ -102,11 +98,10 @@ public class MainActivity extends Activity {
         startService(networkServIntent);
     }
 
-    public void buttonSendAccelsClick(View view) {
-        Log.d("gpstrax", "buttonSendAccelsClick");
-        Intent networkServIntent = new Intent(this, NetworkService.class);
-        networkServIntent.putExtra(C.NET_OBJ, "A");
-        startService(networkServIntent);
+    public void buttonOpenAccelClick(View view) {
+        Log.d("gpstrax", "buttonOpenAccelClick");
+        Intent accelIntent = new Intent(this, AccelActivity.class);
+        startActivity(accelIntent);
     }
 
     public void buttonListenGps5(View view) {
@@ -121,14 +116,6 @@ public class MainActivity extends Activity {
         stopLocationService();
     }
 
-    public void buttonStartAccelClick(View view) {
-        startAccelService();
-    }
-
-    public void buttonStopAccelClick(View view) {
-        stopAccelService();
-    }
-
     public void buttonRefreshCountClick(View view) {
         refreshAll();
     }
@@ -139,26 +126,16 @@ public class MainActivity extends Activity {
         updateTextSentCnt();
     }
 
-    public void buttonDeleteAllAccelsClick(View view) {
-        deleteAllAccels();
-        updateTextDbAccelCount();
-    }
-
     protected void refreshAll() {
         updateTextGspUpdateStatus();
         updateTextGpsCnt();
         updateTextSentCnt();
         updateTextLatLon(GpsTrax.lastLocation);
         updateTextDbLocationCount();
-        updateTextDbAccelCount();
     }
 
     public void buttonSavePlateNo(View view) {
         savePlateNo();
-    }
-
-    public void buttonSaveAccelThClick(View view) {
-        saveAccelTh();
     }
 
     protected void startLocationService(int gpsFreq) {
@@ -172,22 +149,6 @@ public class MainActivity extends Activity {
         Intent locationServIntent = new Intent(this, LocationService.class);
         stopService(locationServIntent);
         Log.i("gpstrax", "called stopLocationService");
-    }
-
-    protected void startAccelService() {
-        Intent accelServIntent = new Intent(this, AccelService.class);
-        startService(accelServIntent);
-        Log.i("gpstrax", "called startAccelService");
-    }
-
-    protected void stopAccelService() {
-        Intent accelServIntent = new Intent(this, AccelService.class);
-        stopService(accelServIntent);
-        Log.i("gpstrax", "called stopLocationService");
-    }
-
-    protected void deleteAllAccels() {
-        GpsTrax.accelDao.delAccels(0L, Long.MAX_VALUE);
     }
 
     protected void savePlateNo() {
@@ -212,45 +173,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    protected void saveAccelTh() {
-        EditText editAccelTh = (EditText)findViewById(R.id.editAccelTh);
-        String accelThStr = editAccelTh.getText().toString();
-
-        if (accelThStr == null || (accelThStr = accelThStr.trim()).isEmpty()) {
-            showShortToast("plateNo is empty");
-            return;
-        }
-
-        float accelTh;
-        try {
-            accelTh = Float.parseFloat(accelThStr);
-        } catch (NumberFormatException e) {
-            showShortToast(e.getMessage());
-            return;
-        }
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putFloat(C.ACCEL_TH, accelTh);
-        boolean res = editor.commit();
-        showShortToast("commited: " + res);
-        if (res) {
-            GpsTrax.accelTh = accelTh;
-            hideSoftInput(editAccelTh.getWindowToken());
-            LinearLayout topPanel = (LinearLayout)findViewById(R.id.topPanel);
-            topPanel.requestFocus();
-        }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle b) {
-        super.onRestoreInstanceState(b);
-    }
-
     protected void updateTextGpsCnt() {
         TextView textGpsCnt = (TextView)findViewById(R.id.textGpsCnt);
         textGpsCnt.setText(String.valueOf(GpsTrax.gpsCnt));
@@ -264,12 +186,6 @@ public class MainActivity extends Activity {
     protected void updateTextDbLocationCount() {
         int cnt = GpsTrax.locationDao.getCount();
         TextView textSelectCount = (TextView)findViewById(R.id.textDbLocationCount);
-        textSelectCount.setText(String.valueOf(cnt));
-    }
-
-    protected void updateTextDbAccelCount() {
-        int cnt = GpsTrax.accelDao.getCount();
-        TextView textSelectCount = (TextView)findViewById(R.id.textDbAccelCount);
         textSelectCount.setText(String.valueOf(cnt));
     }
 

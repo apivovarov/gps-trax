@@ -2,6 +2,7 @@
 <resources>
 
     <string name="main_label">Gps Trax</string>
+    <string name="accel_label">Accel</string>
     <string name="textGpsUpdatesStatusLabel">GPS update freq:</string>
     <string name="textGpsUpdatesStatus">-</string>
     <string name="editPlateNo">Plate No</string>
@@ -15,6 +16,7 @@
     <string name="buttonResetCount">Reset Counters</string>
     <string name="buttonDeleteAllAccels">Del Accels</string>
     <string name="buttonSendLocations">Send Loc</string>
+    <string name="buttonSaveAccelsToCsv">Save as CSV</string>
     <string name="buttonSendAccels">Send Accel</string>
     <string name="buttonListenGps5">5 sec</string>
     <string name="buttonListenGps180">180 sec</string>
@@ -23,8 +25,10 @@
     <string name="buttonStopAccel">Stop Accel</string>
     <string name="textGpsCnt">0</string>
     <string name="textSendCnt">0</string>
+    <string name="textSendAccelsCnt">0</string>
     <string name="textDbLocationCount">0</string>
     <string name="textDbAccelCount">0</string>
     <string name="action_settings">Settings</string>
+    <string name="buttonOpenAccel">Open Accel</string>
 
 </resources>

@@ -1,6 +1,7 @@
 
 package com.rmx.gpstrax.net;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -20,6 +21,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.rmx.gpstrax.C;
+import com.rmx.gpstrax.FileHelper;
 import com.rmx.gpstrax.GpsTrax;
 
 public class NetworkService extends IntentService {
@@ -41,6 +43,8 @@ public class NetworkService extends IntentService {
             readAndSendLocations();
         } else if ("A".equals(obj)) {
             readAndSendAccels();
+        } else if ("A_CSV".equals(obj)) {
+            readAndSaveAccelsToCsv();
         }
     }
 
@@ -154,11 +158,65 @@ public class NetworkService extends IntentService {
                 Log.i("gpstrax", "deleting batch " + cnt + "; firstId: " + firstId + ", lastId: "
                         + lastId);
                 GpsTrax.accelDao.delAccels(firstId, lastId);
-                GpsTrax.sendCnt++;
+                GpsTrax.sendAccelsCnt++;
             }
         } catch (Exception e) {
             Log.e("gpstrax", e.getMessage(), e);
             GpsTrax.showErrorMsg(e.getMessage());
+        }
+    }
+
+    protected void readAndSaveAccelsToCsv() {
+        try {
+            Log.d("gpstrax", "readAndSaveAccelsToCsv");
+            boolean more = true;
+            while (more) {
+                List<String> res = new ArrayList<String>();
+                more = GpsTrax.accelDao.getFirstNAccels(res, 20000);
+                more = false;
+
+                if (res.size() == 0) {
+                    Log.i("gpstrax", "no data were read from DB");
+                    break;
+                }
+
+                for (String s : res) {
+                    JSONObject accel = new JSONObject(s);
+                    long ts = accel.getLong("ts");
+                    double x = accel.getDouble("x");
+                    double y = accel.getDouble("y");
+                    double z = accel.getDouble("z");
+                    appendAccelToCsv(ts, x, y, z);
+                    GpsTrax.sendAccelsCnt++;
+                }
+            }
+            if (GpsTrax.pw != null) {
+                GpsTrax.pw.close();
+                GpsTrax.pw = null;
+            }
+        } catch (Exception e) {
+            Log.e("gpstrax", e.getMessage(), e);
+            GpsTrax.showErrorMsg(e.getMessage());
+        }
+    }
+
+    protected void appendAccelToCsv(long time, double x, double y, double z) {
+        if (GpsTrax.pw == null) {
+            boolean writable = FileHelper.isExternalStorageWritable();
+            Log.i(C.LOG_TAG, "ext sd writable: " + writable);
+            if (writable) {
+                File f = FileHelper.getFile(getApplicationContext(), "mytest2");
+                File f2 = new File(f, "testfile2");
+                GpsTrax.pw = FileHelper.getPrintWriter(f2);
+
+            }
+        } else {
+            StringBuilder sb = new StringBuilder();
+            sb.append(time).append(",");
+            sb.append(x).append(",");
+            sb.append(y).append(",");
+            sb.append(z).append("\n");
+            FileHelper.appendToFile(GpsTrax.pw, sb.toString());
         }
     }
 

@@ -1,6 +1,7 @@
 
 package com.rmx.gpstrax;
 
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -32,6 +33,8 @@ public class GpsTrax extends Application {
 
     public static int sendCnt;
 
+    public static int sendAccelsCnt;
+
     public static String plateNo;
 
     public static Location lastLocation;
@@ -45,7 +48,7 @@ public class GpsTrax extends Application {
     public static PlateDbHelper dbHelper;
 
     public static LocationDao locationDao;
-    
+
     public static AccelDao accelDao;
 
     public static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
@@ -53,6 +56,8 @@ public class GpsTrax extends Application {
     public static SimpleDateFormat sdfHhmmss = new SimpleDateFormat("HH:mm:ss", Locale.US);
 
     static ShowErrorHandler showErrorHandler;
+
+    public static PrintWriter pw;
 
     /*
      * (non-Javadoc)

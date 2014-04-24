@@ -1,11 +1,11 @@
 
 package com.rmx.gpstrax.accel;
 
-import com.rmx.gpstrax.GpsTrax;
-
 import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
 import android.util.Log;
+
+import com.rmx.gpstrax.GpsTrax;
 
 public class AccelListener implements SensorEventListener {
 
