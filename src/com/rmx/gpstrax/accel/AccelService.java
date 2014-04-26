@@ -18,7 +18,7 @@ public class AccelService extends Service {
 
     Notification.Builder notifBuilder;
 
-    static final int NOTIF_ID = 1;
+    static final int NOTIF_ID = 2;
 
     long adjFreq;
 
