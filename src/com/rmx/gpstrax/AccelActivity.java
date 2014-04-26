@@ -37,9 +37,12 @@ public class AccelActivity extends Activity {
         setContentView(R.layout.accel);
 
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        GpsTrax.accelTh = sharedPref.getFloat(C.ACCEL_TH, 3.0f);
+        GpsTrax.zAccelTh = sharedPref.getFloat(C.ACCEL_TH, 3.0f);
+        GpsTrax.zAboveThCntTh = sharedPref.getInt(C.ABOVE_TH_CNT_TH, 3);
         EditText editAccelTh = (EditText)findViewById(R.id.editAccelTh);
-        editAccelTh.setText(Float.toString(GpsTrax.accelTh));
+        EditText editAboveThCntTh = (EditText)findViewById(R.id.editAboveThCntTh);
+        editAccelTh.setText(Float.toString(GpsTrax.zAccelTh));
+        editAboveThCntTh.setText(Integer.toString(GpsTrax.zAboveThCntTh));
 
         Log.d("gpstrax", "onCreate done");
     }
@@ -73,17 +76,17 @@ public class AccelActivity extends Activity {
         Toast.makeText(getApplicationContext(), msg, duration).show();
     }
 
-    public void buttonSendAccelsClick(View view) {
-        Log.d("gpstrax", "buttonSendAccelsClick");
+    public void buttonSendAlertsClick(View view) {
+        Log.d("gpstrax", "buttonSendAlertsClick");
         Intent networkServIntent = new Intent(this, NetworkService.class);
-        networkServIntent.putExtra(C.NET_OBJ, "A");
+        networkServIntent.putExtra(C.NET_OBJ, "ALERT");
         startService(networkServIntent);
     }
 
     public void buttonSaveAccelsToCsvClick(View view) {
         Log.d("gpstrax", "buttonSendAccelsClick");
         Intent networkServIntent = new Intent(this, NetworkService.class);
-        networkServIntent.putExtra(C.NET_OBJ, "A_CSV");
+        networkServIntent.putExtra(C.NET_OBJ, "ACELL_CSV");
         startService(networkServIntent);
     }
 
@@ -100,8 +103,10 @@ public class AccelActivity extends Activity {
     }
 
     public void buttonResetCountClick(View view) {
-        GpsTrax.sendAccelsCnt = 0;
-        updateTextSentCnt();
+        GpsTrax.saveAccelsCnt = 0;
+        GpsTrax.sendAlertCnt = 0;
+        updateTextAccelSaveCnt();
+        updateTextAlertSendCnt();
     }
 
     public void buttonDeleteAllAccelsClick(View view) {
@@ -109,9 +114,16 @@ public class AccelActivity extends Activity {
         updateTextDbAccelCount();
     }
 
+    public void buttonDeleteAllAlertsClick(View view) {
+        deleteAllAlerts();
+        updateTextDbAlertCount();
+    }
+
     protected void refreshAll() {
-        updateTextSentCnt();
+        updateTextAccelSaveCnt();
+        updateTextAlertSendCnt();
         updateTextDbAccelCount();
+        updateTextDbAlertCount();
     }
 
     public void buttonSaveAccelThClick(View view) {
@@ -134,12 +146,23 @@ public class AccelActivity extends Activity {
         GpsTrax.accelDao.delAccels(0L, Long.MAX_VALUE);
     }
 
+    protected void deleteAllAlerts() {
+        GpsTrax.alertDao.delAlerts(0L, Long.MAX_VALUE);
+    }
+
     protected void saveAccelTh() {
         EditText editAccelTh = (EditText)findViewById(R.id.editAccelTh);
+        EditText editAboveThCntTh = (EditText)findViewById(R.id.editAboveThCntTh);
         String accelThStr = editAccelTh.getText().toString();
+        String aboveThCntThStr = editAboveThCntTh.getText().toString();
 
         if (accelThStr == null || (accelThStr = accelThStr.trim()).isEmpty()) {
-            showShortToast("plateNo is empty");
+            showShortToast("accelTh is empty");
+            return;
+        }
+
+        if (aboveThCntThStr == null || (aboveThCntThStr = aboveThCntThStr.trim()).isEmpty()) {
+            showShortToast("aboveTcCntTh is empty");
             return;
         }
 
@@ -150,28 +173,50 @@ public class AccelActivity extends Activity {
             showShortToast(e.getMessage());
             return;
         }
+
+        int aboveThCntTh;
+        try {
+            aboveThCntTh = Integer.parseInt(aboveThCntThStr);
+        } catch (NumberFormatException e) {
+            showShortToast(e.getMessage());
+            return;
+        }
+
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putFloat(C.ACCEL_TH, accelTh);
+        editor.putInt(C.ABOVE_TH_CNT_TH, aboveThCntTh);
         boolean res = editor.commit();
         showShortToast("commited: " + res);
         if (res) {
-            GpsTrax.accelTh = accelTh;
+            GpsTrax.zAccelTh = accelTh;
+            GpsTrax.zAboveThCntTh = aboveThCntTh;
             hideSoftInput(editAccelTh.getWindowToken());
             LinearLayout topPanel = (LinearLayout)findViewById(R.id.topPanel);
             topPanel.requestFocus();
         }
     }
 
-    protected void updateTextSentCnt() {
-        TextView textSendAccelCnt = (TextView)findViewById(R.id.textSendAccelsCnt);
-        textSendAccelCnt.setText(String.valueOf(GpsTrax.sendAccelsCnt));
+    protected void updateTextAccelSaveCnt() {
+        TextView textSendAccelCnt = (TextView)findViewById(R.id.textSaveAccelsCnt);
+        textSendAccelCnt.setText(String.valueOf(GpsTrax.saveAccelsCnt));
+    }
+
+    protected void updateTextAlertSendCnt() {
+        TextView textSendAccelCnt = (TextView)findViewById(R.id.textSendAlertCnt);
+        textSendAccelCnt.setText(String.valueOf(GpsTrax.sendAlertCnt));
     }
 
     protected void updateTextDbAccelCount() {
         int cnt = GpsTrax.accelDao.getCount();
-        TextView textSelectCount = (TextView)findViewById(R.id.textDbAccelCount);
-        textSelectCount.setText(String.valueOf(cnt));
+        TextView tv = (TextView)findViewById(R.id.textDbAccelCount);
+        tv.setText(String.valueOf(cnt));
+    }
+
+    protected void updateTextDbAlertCount() {
+        int cnt = GpsTrax.alertDao.getCount();
+        TextView tv = (TextView)findViewById(R.id.textDbAlertCount);
+        tv.setText(String.valueOf(cnt));
     }
 
     protected void toggleSoftInput() {

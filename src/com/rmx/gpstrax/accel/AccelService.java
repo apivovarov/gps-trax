@@ -41,7 +41,7 @@ public class AccelService extends Service {
         }
         addAccelListener();
 
-        notifBuilder.setContentTitle("Accel th: " + GpsTrax.accelTh);
+        notifBuilder.setContentTitle("Accel th: " + GpsTrax.zAccelTh);
         getNotifMngr().notify(NOTIF_ID, notifBuilder.getNotification());
 
         return START_STICKY;
@@ -53,7 +53,7 @@ public class AccelService extends Service {
         super.onCreate();
 
         notifBuilder = new Notification.Builder(GpsTrax.context)
-                .setContentTitle("Accel th: " + GpsTrax.accelTh).setContentText("")
+                .setContentTitle("Accel th: " + GpsTrax.zAccelTh).setContentText("")
                 .setSmallIcon(R.drawable.accelerometer);
 
         startForeground(NOTIF_ID, notifBuilder.getNotification());

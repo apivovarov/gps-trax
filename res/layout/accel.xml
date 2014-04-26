@@ -40,11 +40,11 @@
             android:text="@string/buttonRefreshCount" />
 
         <Button
-            android:id="@+id/buttonSendAccels"
+            android:id="@+id/buttonSendAlerts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="buttonSendAccelsClick"
-            android:text="@string/buttonSendAccels" />
+            android:onClick="buttonSendAlertsClick"
+            android:text="@string/buttonSendAlerts" />
 
         <Button
             android:id="@+id/buttonSaveAccelsToCsv"
@@ -63,7 +63,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="4dp"
-            android:text="DB accel count:" />
+            android:text="@string/textDbAlertCountLabel" />
+
+        <TextView
+            android:id="@+id/textDbAlertCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:freezesText="true"
+            android:text="@string/textDbAlertCount" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="4dp"
+            android:text="@string/textDbAccelCountLabel" />
 
         <TextView
             android:id="@+id/textDbAccelCount"
@@ -82,14 +101,33 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="4dp"
-            android:text="Send Accels count:" />
+            android:text="@string/textSaveAccelsCntLabel" />
 
         <TextView
-            android:id="@+id/textSendAccelsCnt"
+            android:id="@+id/textSaveAccelsCnt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:freezesText="true"
-            android:text="@string/textSendAccelsCnt" />
+            android:text="@string/textSaveAccelsCnt" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="4dp"
+            android:text="@string/textSendAlertCntLabel" />
+
+        <TextView
+            android:id="@+id/textSendAlertCnt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:freezesText="true"
+            android:text="@string/textSendAlertCnt" />
     </LinearLayout>
 
     <LinearLayout
@@ -103,6 +141,13 @@
             android:layout_height="wrap_content"
             android:onClick="buttonResetCountClick"
             android:text="@string/buttonResetCount" />
+
+        <Button
+            android:id="@+id/buttonDeleteAllAlerts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="buttonDeleteAllAlertsClick"
+            android:text="@string/buttonDeleteAllAlerts" />
 
         <Button
             android:id="@+id/buttonDeleteAllAccels"
@@ -122,6 +167,18 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:hint="@string/editAccelTh" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/editAboveThCntTh"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/editAboveThCntTh" />
 
         <Button
             android:id="@+id/buttonSaveAccelTh"

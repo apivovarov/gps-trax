@@ -9,6 +9,7 @@ import java.util.TimeZone;
 import android.app.Application;
 import android.content.Context;
 import android.location.Location;
+import android.location.LocationManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import com.rmx.gpstrax.accel.AccelListener;
 import com.rmx.gpstrax.db.AccelDao;
+import com.rmx.gpstrax.db.AlertDao;
 import com.rmx.gpstrax.db.LocationDao;
 import com.rmx.gpstrax.db.PlateDbHelper;
 import com.rmx.gpstrax.loc.LocationService.GpsLocationListener;
@@ -33,7 +35,9 @@ public class GpsTrax extends Application {
 
     public static int sendCnt;
 
-    public static int sendAccelsCnt;
+    public static int saveAccelsCnt;
+
+    public static int sendAlertCnt;
 
     public static String plateNo;
 
@@ -43,13 +47,17 @@ public class GpsTrax extends Application {
 
     public static AccelListener accelListener;
 
-    public static float accelTh;
+    public static float zAccelTh;
+
+    public static int zAboveThCntTh;
 
     public static PlateDbHelper dbHelper;
 
     public static LocationDao locationDao;
 
     public static AccelDao accelDao;
+
+    public static AlertDao alertDao;
 
     public static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
@@ -59,22 +67,26 @@ public class GpsTrax extends Application {
 
     public static PrintWriter pw;
 
+    public static GpsTrax me;
+
     /*
      * (non-Javadoc)
      * @see android.app.Application#onCreate()
      */
     @Override
     public void onCreate() {
-        GpsTrax.context = getApplicationContext();
+        context = getApplicationContext();
 
         dbHelper = new PlateDbHelper(context);
         locationDao = new LocationDao();
         accelDao = new AccelDao();
+        alertDao = new AlertDao();
 
         sdf.setTimeZone(TimeZone.getDefault());
         sdfHhmmss.setTimeZone(TimeZone.getDefault());
 
         showErrorHandler = new ShowErrorHandler();
+        me = this;
     }
 
     public static Context getAppContext() {
@@ -116,5 +128,10 @@ public class GpsTrax extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public LocationManager getLocationManager() {
+        LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        return lm;
     }
 }

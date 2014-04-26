@@ -26,9 +26,9 @@ import com.rmx.gpstrax.GpsTrax;
 
 public class NetworkService extends IntentService {
 
-    public static final String locationUrlStr = "http://172.31.50.152:8080/dlp-proxy-server/rest/location/save";
+    public static final String locationSaveUrlStr = "http://172.31.50.152:8080/dlp-proxy-server/rest/location/save";
 
-    public static final String accelUrlStr = "http://172.31.50.152:8080/dlp-proxy-server/rest/accel/save";
+    public static final String alertSaveUrlStr = "http://172.31.50.152:8080/dlp-proxy-server/rest/alert/save";
 
     public static final Charset utf8 = Charset.forName("UTF-8");
 
@@ -41,9 +41,9 @@ public class NetworkService extends IntentService {
         String obj = intent.getExtras().getString(C.NET_OBJ);
         if ("L".equals(obj)) {
             readAndSendLocations();
-        } else if ("A".equals(obj)) {
-            readAndSendAccels();
-        } else if ("A_CSV".equals(obj)) {
+        } else if ("ALERT".equals(obj)) {
+            readAndSendAlerts();
+        } else if ("ACCEL_CSV".equals(obj)) {
             readAndSaveAccelsToCsv();
         }
     }
@@ -97,7 +97,7 @@ public class NetworkService extends IntentService {
                     String locListJson = locList.toString();
                     Log.i("gpstrax", "batch " + cnt + ": " + locListJson);
 
-                    sendJsonViaPost(locationUrlStr, locListJson);
+                    sendJsonViaPost(locationSaveUrlStr, locListJson);
                 }
                 Log.i("gpstrax", "deleting batch " + cnt + "; firstId: " + firstId + ", lastId: "
                         + lastId);
@@ -110,14 +110,14 @@ public class NetworkService extends IntentService {
         }
     }
 
-    protected void readAndSendAccels() {
+    protected void readAndSendAlerts() {
         try {
-            Log.d("gpstrax", "readAndSendAccels");
+            Log.d("gpstrax", "readAndSendAlerts");
             boolean more = true;
             int cnt = 0;
             while (more) {
                 List<String> res = new ArrayList<String>();
-                more = GpsTrax.accelDao.getFirstNAccels(res, C.SEND_BATCH_SIZE);
+                more = GpsTrax.alertDao.getFirstNAlerts(res, C.SEND_BATCH_SIZE);
                 more = false;
 
                 if (res.size() == 0) {
@@ -126,18 +126,18 @@ public class NetworkService extends IntentService {
                 }
 
                 JSONObject batch = new JSONObject();
-                JSONArray accelList = new JSONArray();
+                JSONArray alertList = new JSONArray();
                 long firstId = 0L;
                 long lastId = 0L;
 
-                JSONObject accel = null;
+                JSONObject alert = null;
                 long dlpLocTs = 0L;
                 for (String s : res) {
-                    accel = new JSONObject(s);
-                    dlpLocTs = accel.getLong("ts");
+                    alert = new JSONObject(s);
+                    dlpLocTs = alert.getLong("ts");
                     // valid time 01/01/2014 - 01/01/2050
                     if (dlpLocTs >= C.MIN_LOC_TS && dlpLocTs < C.MAX_LOC_TS) {
-                        accelList.put(accel);
+                        alertList.put(alert);
                     }
                     if (firstId == 0L) {
                         firstId = dlpLocTs;
@@ -145,20 +145,20 @@ public class NetworkService extends IntentService {
                 }
                 lastId = dlpLocTs;
 
-                if (accelList.length() > 0) {
-                    batch.put("accels", accelList);
+                if (alertList.length() > 0) {
+                    batch.put("alerts", alertList);
                     batch.put("plNo", GpsTrax.plateNo);
                     // send data
                     cnt++;
                     String locListJson = batch.toString();
                     Log.i("gpstrax", "batch " + cnt + ": " + locListJson);
 
-                    sendJsonViaPost(accelUrlStr, locListJson);
+                    sendJsonViaPost(alertSaveUrlStr, locListJson);
                 }
                 Log.i("gpstrax", "deleting batch " + cnt + "; firstId: " + firstId + ", lastId: "
                         + lastId);
                 GpsTrax.accelDao.delAccels(firstId, lastId);
-                GpsTrax.sendAccelsCnt++;
+                GpsTrax.sendAlertCnt++;
             }
         } catch (Exception e) {
             Log.e("gpstrax", e.getMessage(), e);
@@ -187,7 +187,7 @@ public class NetworkService extends IntentService {
                     double y = accel.getDouble("y");
                     double z = accel.getDouble("z");
                     appendAccelToCsv(ts, x, y, z);
-                    GpsTrax.sendAccelsCnt++;
+                    GpsTrax.saveAccelsCnt++;
                 }
             }
             if (GpsTrax.pw != null) {
