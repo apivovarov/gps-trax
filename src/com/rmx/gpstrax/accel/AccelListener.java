@@ -70,8 +70,10 @@ public class AccelListener implements SensorEventListener {
         Location loc = GpsTrax.me.getLocationManager().getLastKnownLocation(
                 LocationManager.PASSIVE_PROVIDER);
 
-        alert.lat = loc.getLatitude();
-        alert.lon = loc.getLongitude();
+        if (loc != null) {
+            alert.lat = loc.getLatitude();
+            alert.lon = loc.getLongitude();
+        }
 
         alert.accel = accel;
 

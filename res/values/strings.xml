@@ -6,6 +6,7 @@
     <string name="textGpsUpdatesStatusLabel">GPS update freq:</string>
     <string name="textGpsUpdatesStatus">-</string>
     <string name="editPlateNo">Plate No</string>
+    <string name="editSpeedTh">Speeding Mph</string>
     <string name="editAccelTh">Accel TH</string>
     <string name="editAboveThCntTh">Above TH Cnt TH</string>
     <string name="buttonSavePlateNo">Save Setting</string>

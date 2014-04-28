@@ -157,7 +157,7 @@ public class NetworkService extends IntentService {
                 }
                 Log.i("gpstrax", "deleting batch " + cnt + "; firstId: " + firstId + ", lastId: "
                         + lastId);
-                GpsTrax.accelDao.delAccels(firstId, lastId);
+                GpsTrax.alertDao.delAlerts(firstId, lastId);
                 GpsTrax.sendAlertCnt++;
             }
         } catch (Exception e) {

@@ -78,6 +78,18 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:hint="@string/editPlateNo" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/editSpeedTh"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/editSpeedTh" />
 
         <Button
             android:id="@+id/buttonSavePlateNo"
@@ -124,6 +136,25 @@
             android:layout_height="wrap_content"
             android:freezesText="true"
             android:text="@string/textGpsCnt" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="4dp"
+            android:text="@string/textDbAlertCountLabel" />
+
+        <TextView
+            android:id="@+id/textDbAlertCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:freezesText="true"
+            android:text="@string/textDbAlertCount" />
     </LinearLayout>
 
     <LinearLayout

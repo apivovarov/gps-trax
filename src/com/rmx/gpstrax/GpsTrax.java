@@ -24,6 +24,7 @@ import com.rmx.gpstrax.db.AlertDao;
 import com.rmx.gpstrax.db.LocationDao;
 import com.rmx.gpstrax.db.PlateDbHelper;
 import com.rmx.gpstrax.loc.LocationService.GpsLocationListener;
+import com.rmx.gpstrax.loc.SpeedListener;
 
 public class GpsTrax extends Application {
 
@@ -45,7 +46,11 @@ public class GpsTrax extends Application {
 
     public static GpsLocationListener gpsLocListener;
 
+    public static SpeedListener speedListener;
+
     public static AccelListener accelListener;
+
+    public static float speedTh;
 
     public static float zAccelTh;
 

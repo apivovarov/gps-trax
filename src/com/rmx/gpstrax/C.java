@@ -7,6 +7,8 @@ public interface C {
 
     String PLATE_NO = "plateno";
 
+    String SPEED_TH = "speedth";
+
     String ACCEL_TH = "accelth";
 
     String ABOVE_TH_CNT_TH = "abovethcntth";

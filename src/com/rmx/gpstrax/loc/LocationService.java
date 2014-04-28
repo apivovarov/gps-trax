@@ -36,28 +36,35 @@ public class LocationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         int freq = intent.getIntExtra(C.GPS_FREQ, 5000);
 
+        boolean highFreq;
         int realFreq;
         if (freq <= 10000) {
             // if freq is high - track gsp constantly (every 1 sec)
             realFreq = 1000;
             adjFreq = freq - 200;
+            highFreq = true;
         } else {
             // if freq is low then give gps 7 sec to fix gps after long sleep
             // adjFreq related logic should always return true
             realFreq = freq - 7000;
             adjFreq = 0;
+            highFreq = false;
         }
 
         Log.i("gpstrax", "LocationService onStartCommand, freq: " + freq + " adjFreq: " + adjFreq
                 + " realFreq: " + realFreq);
 
         if (GpsTrax.gpsLocListener != null) {
+            removeSpeedListener();
             removeLocationListener();
             try {
                 // sleep needed to switch from 3 min to 5 sec gps listener
                 Thread.sleep(50);
             } catch (InterruptedException e) {
             }
+        }
+        if (highFreq) {
+            addSpeedListener(realFreq);
         }
         addLocationListener(realFreq);
 
@@ -84,12 +91,13 @@ public class LocationService extends Service {
 
     @Override
     public void onDestroy() {
+        removeSpeedListener();
         removeLocationListener();
         Log.i("gpstrax", "LocationService onDestroy: " + this);
         super.onDestroy();
     }
 
-    private void addLocationListener(int freq) {
+    protected void addLocationListener(int freq) {
         try {
             LocationManager lm = getLocationManager();
             GpsTrax.gpsLocListener = new GpsLocationListener();
@@ -108,6 +116,29 @@ public class LocationService extends Service {
                 GpsTrax.gpsLocListener = null;
                 GpsTrax.gpsFreq = -1;
                 Log.i("gpstrax", "LocationListener removed");
+            }
+        } catch (RuntimeException e) {
+            Log.e("gpstrax", e.getMessage(), e);
+        }
+    }
+
+    protected void addSpeedListener(int freq) {
+        try {
+            LocationManager lm = getLocationManager();
+            GpsTrax.speedListener = new SpeedListener();
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, freq, 0f, GpsTrax.speedListener);
+            Log.i("gpstrax", "SpeedListener added, freq: " + freq);
+        } catch (RuntimeException e) {
+            Log.e("gpstrax", e.getMessage(), e);
+        }
+    }
+
+    protected void removeSpeedListener() {
+        try {
+            if (GpsTrax.speedListener != null) {
+                getLocationManager().removeUpdates(GpsTrax.speedListener);
+                GpsTrax.speedListener = null;
+                Log.i("gpstrax", "SpeedListener removed");
             }
         } catch (RuntimeException e) {
             Log.e("gpstrax", e.getMessage(), e);

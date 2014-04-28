@@ -41,8 +41,16 @@ public class MainActivity extends Activity {
 
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         GpsTrax.plateNo = sharedPref.getString(C.PLATE_NO, "6YIT551");
+        String speedStr = sharedPref.getString(C.SPEED_TH, "75.0");
+
         EditText editPlateNo = (EditText)findViewById(R.id.editPlateNo);
         editPlateNo.setText(GpsTrax.plateNo);
+
+        EditText editSpeedTh = (EditText)findViewById(R.id.editSpeedTh);
+        editSpeedTh.setText(speedStr);
+
+        // convert mph to m/s
+        GpsTrax.speedTh = Float.parseFloat(speedStr) * 0.44776f;
 
         Log.d("gpstrax", "onCreate done");
     }
@@ -131,11 +139,13 @@ public class MainActivity extends Activity {
         updateTextGpsCnt();
         updateTextSentCnt();
         updateTextLatLon(GpsTrax.lastLocation);
+        updateTextDbAlertCount();
         updateTextDbLocationCount();
     }
 
     public void buttonSavePlateNo(View view) {
         savePlateNo();
+        saveSpeedTh();
     }
 
     protected void startLocationService(int gpsFreq) {
@@ -173,6 +183,26 @@ public class MainActivity extends Activity {
         }
     }
 
+    protected void saveSpeedTh() {
+        EditText editSpeedTh = (EditText)findViewById(R.id.editSpeedTh);
+        String speedStr = editSpeedTh.getText().toString();
+        // convert mph to m/s
+        float speedTh = Float.parseFloat(speedStr) * 0.44776f;
+
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(C.SPEED_TH, speedStr);
+        boolean res = editor.commit();
+        showShortToast("commited: " + res);
+        if (res) {
+            GpsTrax.speedTh = speedTh;
+            hideSoftInput(editSpeedTh.getWindowToken());
+            LinearLayout topPanel = (LinearLayout)findViewById(R.id.topPanel);
+            topPanel.requestFocus();
+        }
+
+    }
+
     protected void updateTextGpsCnt() {
         TextView textGpsCnt = (TextView)findViewById(R.id.textGpsCnt);
         textGpsCnt.setText(String.valueOf(GpsTrax.gpsCnt));
@@ -181,6 +211,12 @@ public class MainActivity extends Activity {
     protected void updateTextSentCnt() {
         TextView textSendCnt = (TextView)findViewById(R.id.textSendCnt);
         textSendCnt.setText(String.valueOf(GpsTrax.sendCnt));
+    }
+
+    protected void updateTextDbAlertCount() {
+        int cnt = GpsTrax.alertDao.getCount();
+        TextView tv = (TextView)findViewById(R.id.textDbAlertCount);
+        tv.setText(String.valueOf(cnt));
     }
 
     protected void updateTextDbLocationCount() {
