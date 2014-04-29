@@ -41,6 +41,7 @@ public class SpeedListener implements LocationListener {
                         sumSpeed = speed;
                         speedCnt++;
                         speeding = true;
+                        GpsTrax.playNotif();
                     } else {
                         // continue speeding. update max speed
                         if (maxSpeed < speed) {
@@ -48,7 +49,6 @@ public class SpeedListener implements LocationListener {
                         }
                         sumSpeed += speed;
                         speedCnt++;
-                        GpsTrax.playNotif();
                     }
                 } else {
                     // mark stop point
@@ -71,6 +71,7 @@ public class SpeedListener implements LocationListener {
                         speeding = false;
 
                         saveAlert(alert);
+                        GpsTrax.playNotif();
                     }
                 }
             }

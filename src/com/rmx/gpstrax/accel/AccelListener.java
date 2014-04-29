@@ -8,6 +8,7 @@ import android.location.LocationManager;
 import android.util.Log;
 
 import com.rmx.gpstrax.AlertJson;
+import com.rmx.gpstrax.C;
 import com.rmx.gpstrax.GpsTrax;
 
 public class AccelListener implements SensorEventListener {
@@ -28,10 +29,12 @@ public class AccelListener implements SensorEventListener {
         if (Math.abs(event.values[2]) >= GpsTrax.zAccelTh) {
             zAboveThCnt++;
             zBelowThCnt = 0;
+            Log.i(C.LOG_TAG, "zAboveThCnt: " + zAboveThCnt);
 
             // hardbrake detected
             if (zAboveThCnt == GpsTrax.zAboveThCntTh && !hb) {
                 hb = true;
+                Log.i(C.LOG_TAG, "hb=true");
                 long eventMs = System.currentTimeMillis() + (event.timestamp - System.nanoTime())
                         / 1000000L;
                 saveAlert(eventMs, event.values[2]);
@@ -53,10 +56,16 @@ public class AccelListener implements SensorEventListener {
             // GpsTrax.accelDao.saveAccel(eventMs, event.values);
             // Log.i("gpstrax", sb.toString());
         } else {
-            zAboveThCnt = 0;
-            zBelowThCnt++;
-            if (zBelowThCnt == 2) {
-                hb = false;
+            if (zAboveThCnt > 0) {
+                zAboveThCnt = 0;
+            }
+            if (zBelowThCnt <= 2) {
+                zBelowThCnt++;
+                Log.i(C.LOG_TAG, "zBelowThCnt: " + zBelowThCnt);
+                if (zBelowThCnt == 2) {
+                    hb = false;
+                    Log.i(C.LOG_TAG, "hb=false");
+                }
             }
         }
 
