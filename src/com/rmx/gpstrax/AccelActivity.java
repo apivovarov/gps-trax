@@ -37,12 +37,21 @@ public class AccelActivity extends Activity {
         setContentView(R.layout.accel);
 
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        GpsTrax.zAccelTh = sharedPref.getFloat(C.ACCEL_TH, 3.0f);
-        GpsTrax.zAboveThCntTh = sharedPref.getInt(C.ABOVE_TH_CNT_TH, 3);
+        GpsTrax.zAccelTh = sharedPref.getFloat(C.ACCEL_TH, 3.3f);
+        GpsTrax.zAboveThCntTh = sharedPref.getInt(C.ABOVE_TH_CNT_TH, 2);
+
+        GpsTrax.zAccelTh2 = sharedPref.getFloat(C.ACCEL_TH_2, 2.0f);
+        GpsTrax.zAboveThCntTh2 = sharedPref.getInt(C.ABOVE_TH_CNT_TH_2, 4);
+
         EditText editAccelTh = (EditText)findViewById(R.id.editAccelTh);
         EditText editAboveThCntTh = (EditText)findViewById(R.id.editAboveThCntTh);
         editAccelTh.setText(Float.toString(GpsTrax.zAccelTh));
         editAboveThCntTh.setText(Integer.toString(GpsTrax.zAboveThCntTh));
+
+        EditText editAccelTh2 = (EditText)findViewById(R.id.editAccelTh2);
+        EditText editAboveThCntTh2 = (EditText)findViewById(R.id.editAboveThCntTh2);
+        editAccelTh2.setText(Float.toString(GpsTrax.zAccelTh2));
+        editAboveThCntTh2.setText(Integer.toString(GpsTrax.zAboveThCntTh2));
 
         Log.d("gpstrax", "onCreate done");
     }

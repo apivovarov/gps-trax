@@ -17,7 +17,11 @@ public class AccelListener implements SensorEventListener {
 
     int zBelowThCnt;
 
+    int zAboveThCnt2;
+
     boolean hb = false;
+
+    boolean ac = false;
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -26,7 +30,7 @@ public class AccelListener implements SensorEventListener {
 
     public void onSensorChanged(android.hardware.SensorEvent event) {
 
-        if (Math.abs(event.values[2]) >= GpsTrax.zAccelTh) {
+        if (event.values[2] >= GpsTrax.zAccelTh) {
             zAboveThCnt++;
             zBelowThCnt = 0;
             Log.i(C.LOG_TAG, "zAboveThCnt: " + zAboveThCnt);
@@ -37,7 +41,7 @@ public class AccelListener implements SensorEventListener {
                 Log.i(C.LOG_TAG, "hb=true");
                 long eventMs = System.currentTimeMillis() + (event.timestamp - System.nanoTime())
                         / 1000000L;
-                saveAlert(eventMs, event.values[2]);
+                saveAlert(eventMs, "hb", event.values[2]);
                 GpsTrax.playNotif();
             }
 
@@ -55,25 +59,43 @@ public class AccelListener implements SensorEventListener {
             // // Log.i("gpstrax", "eventMs: " + eventMs);
             // GpsTrax.accelDao.saveAccel(eventMs, event.values);
             // Log.i("gpstrax", sb.toString());
+        } else if (event.values[2] <= -GpsTrax.zAccelTh2) {
+            zAboveThCnt2++;
+            zBelowThCnt = 0;
+            Log.i(C.LOG_TAG, "zAboveThCnt2: " + zAboveThCnt2);
+
+            // hard acceleration detected
+            if (zAboveThCnt2 == GpsTrax.zAboveThCntTh2 && !ac) {
+                ac = true;
+                Log.i(C.LOG_TAG, "ac=true");
+                long eventMs = System.currentTimeMillis() + (event.timestamp - System.nanoTime())
+                        / 1000000L;
+                saveAlert(eventMs, "ac", event.values[2]);
+                GpsTrax.playNotif();
+            }
         } else {
             if (zAboveThCnt > 0) {
                 zAboveThCnt = 0;
+            }
+            if (zAboveThCnt2 > 0) {
+                zAboveThCnt2 = 0;
             }
             if (zBelowThCnt <= 2) {
                 zBelowThCnt++;
                 Log.i(C.LOG_TAG, "zBelowThCnt: " + zBelowThCnt);
                 if (zBelowThCnt == 2) {
                     hb = false;
-                    Log.i(C.LOG_TAG, "hb=false");
+                    ac = false;
+                    Log.i(C.LOG_TAG, "hb=false, ac=false");
                 }
             }
         }
 
     }
 
-    protected void saveAlert(long ts, float accel) {
+    protected void saveAlert(long ts, String type, float accel) {
         AlertJson alert = new AlertJson();
-        alert.type = "hb";
+        alert.type = type;
         alert.ts = ts;
 
         Location loc = GpsTrax.me.getLocationManager().getLastKnownLocation(

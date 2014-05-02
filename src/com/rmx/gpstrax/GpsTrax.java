@@ -56,6 +56,10 @@ public class GpsTrax extends Application {
 
     public static int zAboveThCntTh;
 
+    public static float zAccelTh2;
+
+    public static int zAboveThCntTh2;
+
     public static PlateDbHelper dbHelper;
 
     public static LocationDao locationDao;

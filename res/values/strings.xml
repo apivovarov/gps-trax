@@ -7,8 +7,10 @@
     <string name="textGpsUpdatesStatus">-</string>
     <string name="editPlateNo">Plate No</string>
     <string name="editSpeedTh">Speeding Mph</string>
-    <string name="editAccelTh">Accel TH</string>
-    <string name="editAboveThCntTh">Above TH Cnt TH</string>
+    <string name="editAccelTh">HB TH</string>
+    <string name="editAccelTh2">HAC TH</string>
+    <string name="editAboveThCntTh">HB Cnt TH</string>
+    <string name="editAboveThCntTh2">HAC Cnt TH</string>
     <string name="buttonSavePlateNo">Save Setting</string>
     <string name="buttonSaveAccelTh">Save Setting</string>
     <string name="textLatLon">0.000000,-0.000000 alt: 0.00</string>

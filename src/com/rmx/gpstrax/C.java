@@ -13,6 +13,10 @@ public interface C {
 
     String ABOVE_TH_CNT_TH = "abovethcntth";
 
+    String ACCEL_TH_2 = "accelth2";
+
+    String ABOVE_TH_CNT_TH_2 = "abovethcntth2";
+
     int SEND_BATCH_SIZE = 500;
 
     long MIN_LOC_TS = 1388534400000L;
