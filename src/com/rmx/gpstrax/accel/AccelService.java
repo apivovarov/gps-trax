@@ -58,7 +58,7 @@ public class AccelService extends Service {
         super.onCreate();
 
         notifBuilder = new Notification.Builder(GpsTrax.context).setContentTitle(getHbAcParams())
-                .setContentText("").setSmallIcon(R.drawable.brakes2);
+                .setContentText("").setSmallIcon(R.drawable.accel);
 
         startForeground(NOTIF_ID, notifBuilder.getNotification());
         Log.i("gpstrax", "started AccelService in foreground");
