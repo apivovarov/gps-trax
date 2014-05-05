@@ -23,13 +23,21 @@ public class AccelListener implements SensorEventListener {
 
     boolean ac = false;
 
+    public AccelListener() {
+        Log.i(C.LOG_TAG, "GpsTrax.zAccelTh: " + GpsTrax.zAccelTh);
+        Log.i(C.LOG_TAG, "GpsTrax.zAccelTh2: " + GpsTrax.zAccelTh2);
+
+        Log.i(C.LOG_TAG, "GpsTrax.zAboveThCntTh: " + GpsTrax.zAboveThCntTh);
+        Log.i(C.LOG_TAG, "GpsTrax.zAboveThCntTh2: " + GpsTrax.zAboveThCntTh2);
+    }
+
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         Log.i("gpstrax", "new accel accuracy: " + accuracy);
     }
 
     public void onSensorChanged(android.hardware.SensorEvent event) {
-
+        // Log.i(C.LOG_TAG, "" + event.values[2]);
         if (event.values[2] >= GpsTrax.zAccelTh) {
             zAboveThCnt++;
             zBelowThCnt = 0;
@@ -80,7 +88,7 @@ public class AccelListener implements SensorEventListener {
             if (zAboveThCnt2 > 0) {
                 zAboveThCnt2 = 0;
             }
-            if (zBelowThCnt <= 2) {
+            if (zBelowThCnt < 2) {
                 zBelowThCnt++;
                 Log.i(C.LOG_TAG, "zBelowThCnt: " + zBelowThCnt);
                 if (zBelowThCnt == 2) {

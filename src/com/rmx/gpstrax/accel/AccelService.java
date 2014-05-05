@@ -41,10 +41,15 @@ public class AccelService extends Service {
         }
         addAccelListener();
 
-        notifBuilder.setContentTitle("Accel th: " + GpsTrax.zAccelTh);
+        notifBuilder.setContentTitle(getHbAcParams());
         getNotifMngr().notify(NOTIF_ID, notifBuilder.getNotification());
 
         return START_STICKY;
+    }
+
+    String getHbAcParams() {
+        return "hb:" + GpsTrax.zAccelTh + "/" + GpsTrax.zAboveThCntTh + "; ac:" + GpsTrax.zAccelTh2
+                + "/" + GpsTrax.zAboveThCntTh2;
     }
 
     @Override
@@ -52,9 +57,8 @@ public class AccelService extends Service {
         Log.i("gpstrax", "AccelService onCreate: " + this);
         super.onCreate();
 
-        notifBuilder = new Notification.Builder(GpsTrax.context)
-                .setContentTitle("HB th: " + GpsTrax.zAccelTh + " HAC th: " + GpsTrax.zAccelTh2)
-                .setContentText("").setSmallIcon(R.drawable.accelerometer);
+        notifBuilder = new Notification.Builder(GpsTrax.context).setContentTitle(getHbAcParams())
+                .setContentText("").setSmallIcon(R.drawable.brakes2);
 
         startForeground(NOTIF_ID, notifBuilder.getNotification());
         Log.i("gpstrax", "started AccelService in foreground");

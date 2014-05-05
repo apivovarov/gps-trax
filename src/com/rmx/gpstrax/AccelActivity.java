@@ -41,7 +41,7 @@ public class AccelActivity extends Activity {
         GpsTrax.zAboveThCntTh = sharedPref.getInt(C.ABOVE_TH_CNT_TH, 2);
 
         GpsTrax.zAccelTh2 = sharedPref.getFloat(C.ACCEL_TH_2, 2.0f);
-        GpsTrax.zAboveThCntTh2 = sharedPref.getInt(C.ABOVE_TH_CNT_TH_2, 4);
+        GpsTrax.zAboveThCntTh2 = sharedPref.getInt(C.ABOVE_TH_CNT_TH_2, 2);
 
         EditText editAccelTh = (EditText)findViewById(R.id.editAccelTh);
         EditText editAboveThCntTh = (EditText)findViewById(R.id.editAboveThCntTh);
@@ -165,6 +165,11 @@ public class AccelActivity extends Activity {
         String accelThStr = editAccelTh.getText().toString();
         String aboveThCntThStr = editAboveThCntTh.getText().toString();
 
+        EditText editAccelTh2 = (EditText)findViewById(R.id.editAccelTh2);
+        EditText editAboveThCntTh2 = (EditText)findViewById(R.id.editAboveThCntTh2);
+        String accelThStr2 = editAccelTh2.getText().toString();
+        String aboveThCntThStr2 = editAboveThCntTh2.getText().toString();
+
         if (accelThStr == null || (accelThStr = accelThStr.trim()).isEmpty()) {
             showShortToast("accelTh is empty");
             return;
@@ -175,17 +180,25 @@ public class AccelActivity extends Activity {
             return;
         }
 
-        float accelTh;
-        try {
-            accelTh = Float.parseFloat(accelThStr);
-        } catch (NumberFormatException e) {
-            showShortToast(e.getMessage());
+        if (accelThStr2 == null || (accelThStr2 = accelThStr2.trim()).isEmpty()) {
+            showShortToast("accelTh2 is empty");
             return;
         }
 
+        if (aboveThCntThStr2 == null || (aboveThCntThStr2 = aboveThCntThStr2.trim()).isEmpty()) {
+            showShortToast("aboveTcCntTh2 is empty");
+            return;
+        }
+
+        float accelTh;
+        float accelTh2;
         int aboveThCntTh;
+        int aboveThCntTh2;
         try {
+            accelTh = Float.parseFloat(accelThStr);
             aboveThCntTh = Integer.parseInt(aboveThCntThStr);
+            accelTh2 = Float.parseFloat(accelThStr2);
+            aboveThCntTh2 = Integer.parseInt(aboveThCntThStr2);
         } catch (NumberFormatException e) {
             showShortToast(e.getMessage());
             return;
@@ -195,11 +208,15 @@ public class AccelActivity extends Activity {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putFloat(C.ACCEL_TH, accelTh);
         editor.putInt(C.ABOVE_TH_CNT_TH, aboveThCntTh);
+        editor.putFloat(C.ACCEL_TH_2, accelTh2);
+        editor.putInt(C.ABOVE_TH_CNT_TH_2, aboveThCntTh2);
         boolean res = editor.commit();
         showShortToast("commited: " + res);
         if (res) {
             GpsTrax.zAccelTh = accelTh;
             GpsTrax.zAboveThCntTh = aboveThCntTh;
+            GpsTrax.zAccelTh2 = accelTh2;
+            GpsTrax.zAboveThCntTh2 = aboveThCntTh2;
             hideSoftInput(editAccelTh.getWindowToken());
             LinearLayout topPanel = (LinearLayout)findViewById(R.id.topPanel);
             topPanel.requestFocus();
